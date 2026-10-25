@@ -1,0 +1,328 @@
+===== B: trabalho perdido (30 ensaios por N) =====
+[  1/180] N=  1 t= 0  falha@  39  perdidas=  0 (teoria 0.0)  R= 1565.4 ms  restaurou=True
+[  2/180] N=  1 t= 1  falha@  13  perdidas=  0 (teoria 0.0)  R= 1530.3 ms  restaurou=True
+[  3/180] N=  1 t= 2  falha@   6  perdidas=  0 (teoria 0.0)  R= 1444.9 ms  restaurou=True
+[  4/180] N=  1 t= 3  falha@  21  perdidas=  0 (teoria 0.0)  R= 1471.0 ms  restaurou=True
+[  5/180] N=  1 t= 4  falha@   3  perdidas=  0 (teoria 0.0)  R= 1565.8 ms  restaurou=True
+[  6/180] N=  1 t= 5  falha@  14  perdidas=  0 (teoria 0.0)  R= 1509.7 ms  restaurou=True
+[  7/180] N=  1 t= 6  falha@  35  perdidas=  0 (teoria 0.0)  R= 1596.5 ms  restaurou=True
+[  8/180] N=  1 t= 7  falha@   5  perdidas=  0 (teoria 0.0)  R= 1414.6 ms  restaurou=True
+[  9/180] N=  1 t= 8  falha@  37  perdidas=  0 (teoria 0.0)  R= 1480.2 ms  restaurou=True
+[ 10/180] N=  1 t= 9  falha@   7  perdidas=  0 (teoria 0.0)  R= 1485.2 ms  restaurou=True
+[ 11/180] N=  1 t=10  falha@  23  perdidas=  0 (teoria 0.0)  R= 1587.6 ms  restaurou=True
+[ 12/180] N=  1 t=11  falha@  34  perdidas=  0 (teoria 0.0)  R= 1524.7 ms  restaurou=True
+[ 13/180] N=  1 t=12  falha@  34  perdidas=  0 (teoria 0.0)  R= 1522.1 ms  restaurou=True
+[ 14/180] N=  1 t=13  falha@  24  perdidas=  0 (teoria 0.0)  R= 1468.1 ms  restaurou=True
+[ 15/180] N=  1 t=14  falha@  27  perdidas=  0 (teoria 0.0)  R= 1436.5 ms  restaurou=True
+[ 16/180] N=  1 t=15  falha@  34  perdidas=  0 (teoria 0.0)  R= 1434.7 ms  restaurou=True
+[ 17/180] N=  1 t=16  falha@  12  perdidas=  0 (teoria 0.0)  R= 1437.8 ms  restaurou=True
+[ 18/180] N=  1 t=17  falha@  13  perdidas=  0 (teoria 0.0)  R= 1347.1 ms  restaurou=True
+[ 19/180] N=  1 t=18  falha@  32  perdidas=  0 (teoria 0.0)  R= 1351.6 ms  restaurou=True
+[ 20/180] N=  1 t=19  falha@  29  perdidas=  0 (teoria 0.0)  R= 1379.5 ms  restaurou=True
+[ 21/180] N=  1 t=20  falha@  33  perdidas=  0 (teoria 0.0)  R= 1516.6 ms  restaurou=True
+[ 22/180] N=  1 t=21  falha@  39  perdidas=  0 (teoria 0.0)  R= 1352.4 ms  restaurou=True
+[ 23/180] N=  1 t=22  falha@  19  perdidas=  0 (teoria 0.0)  R= 1401.6 ms  restaurou=True
+[ 24/180] N=  1 t=23  falha@  18  perdidas=  0 (teoria 0.0)  R= 1531.2 ms  restaurou=True
+[ 25/180] N=  1 t=24  falha@  25  perdidas=  0 (teoria 0.0)  R= 1447.6 ms  restaurou=True
+[ 26/180] N=  1 t=25  falha@  23  perdidas=  0 (teoria 0.0)  R= 1459.3 ms  restaurou=True
+[ 27/180] N=  1 t=26  falha@  20  perdidas=  0 (teoria 0.0)  R= 1536.0 ms  restaurou=True
+[ 28/180] N=  1 t=27  falha@   6  perdidas=  0 (teoria 0.0)  R= 1596.5 ms  restaurou=True
+[ 29/180] N=  1 t=28  falha@   4  perdidas=  0 (teoria 0.0)  R= 1580.4 ms  restaurou=True
+[ 30/180] N=  1 t=29  falha@  28  perdidas=  0 (teoria 0.0)  R= 1437.9 ms  restaurou=True
+[ 31/180] N=  5 t= 0  falha@   9  perdidas=  3 (teoria 2.0)  R= 1569.6 ms  restaurou=True
+[ 32/180] N=  5 t= 1  falha@  15  perdidas=  4 (teoria 2.0)  R= 1482.7 ms  restaurou=True
+[ 33/180] N=  5 t= 2  falha@  25  perdidas=  4 (teoria 2.0)  R= 1527.5 ms  restaurou=True
+[ 34/180] N=  5 t= 3  falha@  38  perdidas=  2 (teoria 2.0)  R= 1481.1 ms  restaurou=True
+[ 35/180] N=  5 t= 4  falha@  16  perdidas=  0 (teoria 2.0)  R= 1527.7 ms  restaurou=True
+[ 36/180] N=  5 t= 5  falha@  14  perdidas=  3 (teoria 2.0)  R= 1480.8 ms  restaurou=True
+[ 37/180] N=  5 t= 6  falha@  23  perdidas=  2 (teoria 2.0)  R= 1473.2 ms  restaurou=True
+[ 38/180] N=  5 t= 7  falha@  11  perdidas=  0 (teoria 2.0)  R= 1468.4 ms  restaurou=True
+[ 39/180] N=  5 t= 8  falha@  29  perdidas=  3 (teoria 2.0)  R= 1526.1 ms  restaurou=True
+[ 40/180] N=  5 t= 9  falha@  21  perdidas=  0 (teoria 2.0)  R= 1593.3 ms  restaurou=True
+[ 41/180] N=  5 t=10  falha@   8  perdidas=  2 (teoria 2.0)  R= 1448.3 ms  restaurou=True
+[ 42/180] N=  5 t=11  falha@  25  perdidas=  4 (teoria 2.0)  R= 1525.9 ms  restaurou=True
+[ 43/180] N=  5 t=12  falha@  26  perdidas=  0 (teoria 2.0)  R= 1489.4 ms  restaurou=True
+[ 44/180] N=  5 t=13  falha@  35  perdidas=  4 (teoria 2.0)  R= 1522.4 ms  restaurou=True
+[ 45/180] N=  5 t=14  falha@   9  perdidas=  3 (teoria 2.0)  R= 1481.6 ms  restaurou=True
+[ 46/180] N=  5 t=15  falha@   8  perdidas=  2 (teoria 2.0)  R= 1486.8 ms  restaurou=True
+[ 47/180] N=  5 t=16  falha@  31  perdidas=  0 (teoria 2.0)  R= 1507.3 ms  restaurou=True
+[ 48/180] N=  5 t=17  falha@  18  perdidas=  2 (teoria 2.0)  R= 1413.0 ms  restaurou=True
+[ 49/180] N=  5 t=18  falha@  11  perdidas=  0 (teoria 2.0)  R= 1553.1 ms  restaurou=True
+[ 50/180] N=  5 t=19  falha@  37  perdidas=  1 (teoria 2.0)  R= 1539.5 ms  restaurou=True
+[ 51/180] N=  5 t=20  falha@  37  perdidas=  1 (teoria 2.0)  R= 1590.0 ms  restaurou=True
+[ 52/180] N=  5 t=21  falha@  13  perdidas=  2 (teoria 2.0)  R= 1637.9 ms  restaurou=True
+[ 53/180] N=  5 t=22  falha@  40  perdidas=  4 (teoria 2.0)  R= 1562.0 ms  restaurou=True
+[ 54/180] N=  5 t=23  falha@   9  perdidas=  3 (teoria 2.0)  R= 1597.9 ms  restaurou=True
+[ 55/180] N=  5 t=24  falha@  37  perdidas=  1 (teoria 2.0)  R= 1613.7 ms  restaurou=True
+[ 56/180] N=  5 t=25  falha@  17  perdidas=  1 (teoria 2.0)  R= 1540.6 ms  restaurou=True
+[ 57/180] N=  5 t=26  falha@  28  perdidas=  2 (teoria 2.0)  R= 1550.2 ms  restaurou=True
+[ 58/180] N=  5 t=27  falha@  21  perdidas=  0 (teoria 2.0)  R= 1564.3 ms  restaurou=True
+[ 59/180] N=  5 t=28  falha@   6  perdidas=  0 (teoria 2.0)  R= 1512.7 ms  restaurou=True
+[ 60/180] N=  5 t=29  falha@   9  perdidas=  3 (teoria 2.0)  R= 1603.4 ms  restaurou=True
+[ 61/180] N= 10 t= 0  falha@  27  perdidas=  6 (teoria 4.5)  R= 1534.3 ms  restaurou=True
+[ 62/180] N= 10 t= 1  falha@  11  perdidas=  0 (teoria 4.5)  R= 1433.2 ms  restaurou=True
+[ 63/180] N= 10 t= 2  falha@  24  perdidas=  3 (teoria 4.5)  R= 1456.0 ms  restaurou=True
+[ 64/180] N= 10 t= 3  falha@  13  perdidas=  2 (teoria 4.5)  R= 1527.4 ms  restaurou=True
+[ 65/180] N= 10 t= 4  falha@  20  perdidas=  9 (teoria 4.5)  R= 1436.8 ms  restaurou=True
+[ 66/180] N= 10 t= 5  falha@  38  perdidas=  7 (teoria 4.5)  R= 1592.0 ms  restaurou=True
+[ 67/180] N= 10 t= 6  falha@  38  perdidas=  7 (teoria 4.5)  R= 1521.9 ms  restaurou=True
+[ 68/180] N= 10 t= 7  falha@  36  perdidas=  5 (teoria 4.5)  R= 1467.9 ms  restaurou=True
+[ 69/180] N= 10 t= 8  falha@  27  perdidas=  6 (teoria 4.5)  R= 1507.5 ms  restaurou=True
+[ 70/180] N= 10 t= 9  falha@  16  perdidas=  5 (teoria 4.5)  R= 1574.2 ms  restaurou=True
+[ 71/180] N= 10 t=10  falha@  16  perdidas=  5 (teoria 4.5)  R= 1533.5 ms  restaurou=True
+[ 72/180] N= 10 t=11  falha@  12  perdidas=  1 (teoria 4.5)  R= 1567.8 ms  restaurou=True
+[ 73/180] N= 10 t=12  falha@  25  perdidas=  4 (teoria 4.5)  R= 1592.8 ms  restaurou=True
+[ 74/180] N= 10 t=13  falha@  34  perdidas=  3 (teoria 4.5)  R= 1431.3 ms  restaurou=True
+[ 75/180] N= 10 t=14  falha@  27  perdidas=  6 (teoria 4.5)  R= 1527.2 ms  restaurou=True
+[ 76/180] N= 10 t=15  falha@  16  perdidas=  5 (teoria 4.5)  R= 1504.4 ms  restaurou=True
+[ 77/180] N= 10 t=16  falha@  30  perdidas=  9 (teoria 4.5)  R= 1470.5 ms  restaurou=True
+[ 78/180] N= 10 t=17  falha@  19  perdidas=  8 (teoria 4.5)  R= 1571.7 ms  restaurou=True
+[ 79/180] N= 10 t=18  falha@  33  perdidas=  2 (teoria 4.5)  R= 1463.7 ms  restaurou=True
+[ 80/180] N= 10 t=19  falha@  24  perdidas=  3 (teoria 4.5)  R= 1489.1 ms  restaurou=True
+[ 81/180] N= 10 t=20  falha@  28  perdidas=  7 (teoria 4.5)  R= 1479.3 ms  restaurou=True
+[ 82/180] N= 10 t=21  falha@  14  perdidas=  3 (teoria 4.5)  R= 1607.1 ms  restaurou=True
+[ 83/180] N= 10 t=22  falha@  31  perdidas=  0 (teoria 4.5)  R= 1530.7 ms  restaurou=True
+[ 84/180] N= 10 t=23  falha@  18  perdidas=  7 (teoria 4.5)  R= 1558.6 ms  restaurou=True
+[ 85/180] N= 10 t=24  falha@  20  perdidas=  9 (teoria 4.5)  R= 1435.9 ms  restaurou=True
+[ 86/180] N= 10 t=25  falha@  40  perdidas=  9 (teoria 4.5)  R= 1431.3 ms  restaurou=True
+[ 87/180] N= 10 t=26  falha@  16  perdidas=  5 (teoria 4.5)  R= 1556.1 ms  restaurou=True
+[ 88/180] N= 10 t=27  falha@  32  perdidas=  1 (teoria 4.5)  R= 1608.0 ms  restaurou=True
+[ 89/180] N= 10 t=28  falha@  18  perdidas=  7 (teoria 4.5)  R= 1538.4 ms  restaurou=True
+[ 90/180] N= 10 t=29  falha@  12  perdidas=  1 (teoria 4.5)  R= 1607.1 ms  restaurou=True
+[ 91/180] N= 20 t= 0  falha@  56  perdidas= 15 (teoria 9.5)  R= 1458.5 ms  restaurou=True
+[ 92/180] N= 20 t= 1  falha@  55  perdidas= 14 (teoria 9.5)  R= 1533.9 ms  restaurou=True
+[ 93/180] N= 20 t= 2  falha@  30  perdidas=  9 (teoria 9.5)  R= 1428.8 ms  restaurou=True
+[ 94/180] N= 20 t= 3  falha@  49  perdidas=  8 (teoria 9.5)  R= 1480.0 ms  restaurou=True
+[ 95/180] N= 20 t= 4  falha@  47  perdidas=  6 (teoria 9.5)  R= 1440.9 ms  restaurou=True
+[ 96/180] N= 20 t= 5  falha@  56  perdidas= 15 (teoria 9.5)  R= 1624.0 ms  restaurou=True
+[ 97/180] N= 20 t= 6  falha@  60  perdidas= 19 (teoria 9.5)  R= 1465.7 ms  restaurou=True
+[ 98/180] N= 20 t= 7  falha@  37  perdidas= 16 (teoria 9.5)  R= 1591.3 ms  restaurou=True
+[ 99/180] N= 20 t= 8  falha@  39  perdidas= 18 (teoria 9.5)  R= 1608.6 ms  restaurou=True
+[100/180] N= 20 t= 9  falha@  29  perdidas=  8 (teoria 9.5)  R= 1538.6 ms  restaurou=True
+[101/180] N= 20 t=10  falha@  34  perdidas= 13 (teoria 9.5)  R= 1512.1 ms  restaurou=True
+[102/180] N= 20 t=11  falha@  29  perdidas=  8 (teoria 9.5)  R= 1482.0 ms  restaurou=True
+[103/180] N= 20 t=12  falha@  54  perdidas= 13 (teoria 9.5)  R= 1474.8 ms  restaurou=True
+[104/180] N= 20 t=13  falha@  55  perdidas= 14 (teoria 9.5)  R= 1499.4 ms  restaurou=True
+[105/180] N= 20 t=14  falha@  56  perdidas= 15 (teoria 9.5)  R= 1535.2 ms  restaurou=True
+[106/180] N= 20 t=15  falha@  45  perdidas=  4 (teoria 9.5)  R= 1492.8 ms  restaurou=True
+[107/180] N= 20 t=16  falha@  25  perdidas=  4 (teoria 9.5)  R= 1476.2 ms  restaurou=True
+[108/180] N= 20 t=17  falha@  32  perdidas= 11 (teoria 9.5)  R= 1520.4 ms  restaurou=True
+[109/180] N= 20 t=18  falha@  53  perdidas= 12 (teoria 9.5)  R= 1471.4 ms  restaurou=True
+[110/180] N= 20 t=19  falha@  51  perdidas= 10 (teoria 9.5)  R= 1530.3 ms  restaurou=True
+[111/180] N= 20 t=20  falha@  36  perdidas= 15 (teoria 9.5)  R= 1461.1 ms  restaurou=True
+[112/180] N= 20 t=21  falha@  46  perdidas=  5 (teoria 9.5)  R= 1575.6 ms  restaurou=True
+[113/180] N= 20 t=22  falha@  41  perdidas=  0 (teoria 9.5)  R= 1638.9 ms  restaurou=True
+[114/180] N= 20 t=23  falha@  54  perdidas= 13 (teoria 9.5)  R= 1485.7 ms  restaurou=True
+[115/180] N= 20 t=24  falha@  49  perdidas=  8 (teoria 9.5)  R= 1501.6 ms  restaurou=True
+[116/180] N= 20 t=25  falha@  45  perdidas=  4 (teoria 9.5)  R= 1484.8 ms  restaurou=True
+[117/180] N= 20 t=26  falha@  29  perdidas=  8 (teoria 9.5)  R= 1389.8 ms  restaurou=True
+[118/180] N= 20 t=27  falha@  44  perdidas=  3 (teoria 9.5)  R= 1381.0 ms  restaurou=True
+[119/180] N= 20 t=28  falha@  37  perdidas= 16 (teoria 9.5)  R= 1550.7 ms  restaurou=True
+[120/180] N= 20 t=29  falha@  45  perdidas=  4 (teoria 9.5)  R= 1422.1 ms  restaurou=True
+[121/180] N= 50 t= 0  falha@  97  perdidas= 46 (teoria 24.5)  R= 1460.8 ms  restaurou=True
+[122/180] N= 50 t= 1  falha@  98  perdidas= 47 (teoria 24.5)  R= 1419.7 ms  restaurou=True
+[123/180] N= 50 t= 2  falha@ 131  perdidas= 30 (teoria 24.5)  R= 1480.9 ms  restaurou=True
+[124/180] N= 50 t= 3  falha@  86  perdidas= 35 (teoria 24.5)  R= 1579.9 ms  restaurou=True
+[125/180] N= 50 t= 4  falha@ 120  perdidas= 19 (teoria 24.5)  R= 1499.7 ms  restaurou=True
+[126/180] N= 50 t= 5  falha@  94  perdidas= 43 (teoria 24.5)  R= 1446.2 ms  restaurou=True
+[127/180] N= 50 t= 6  falha@ 134  perdidas= 33 (teoria 24.5)  R= 1442.7 ms  restaurou=True
+[128/180] N= 50 t= 7  falha@  87  perdidas= 36 (teoria 24.5)  R= 1417.5 ms  restaurou=True
+[129/180] N= 50 t= 8  falha@  63  perdidas= 12 (teoria 24.5)  R= 1417.6 ms  restaurou=True
+[130/180] N= 50 t= 9  falha@  76  perdidas= 25 (teoria 24.5)  R= 1421.3 ms  restaurou=True
+[131/180] N= 50 t=10  falha@ 144  perdidas= 43 (teoria 24.5)  R= 1383.9 ms  restaurou=True
+[132/180] N= 50 t=11  falha@  82  perdidas= 31 (teoria 24.5)  R= 1436.1 ms  restaurou=True
+[133/180] N= 50 t=12  falha@ 147  perdidas= 46 (teoria 24.5)  R= 1465.1 ms  restaurou=True
+[134/180] N= 50 t=13  falha@ 116  perdidas= 15 (teoria 24.5)  R= 1366.8 ms  restaurou=True
+[135/180] N= 50 t=14  falha@ 143  perdidas= 42 (teoria 24.5)  R= 1352.2 ms  restaurou=True
+[136/180] N= 50 t=15  falha@ 122  perdidas= 21 (teoria 24.5)  R= 1410.1 ms  restaurou=True
+[137/180] N= 50 t=16  falha@ 138  perdidas= 37 (teoria 24.5)  R= 1389.8 ms  restaurou=True
+[138/180] N= 50 t=17  falha@ 141  perdidas= 40 (teoria 24.5)  R= 1410.1 ms  restaurou=True
+[139/180] N= 50 t=18  falha@  54  perdidas=  3 (teoria 24.5)  R= 1421.9 ms  restaurou=True
+[140/180] N= 50 t=19  falha@ 145  perdidas= 44 (teoria 24.5)  R= 1478.8 ms  restaurou=True
+[141/180] N= 50 t=20  falha@  60  perdidas=  9 (teoria 24.5)  R= 1425.5 ms  restaurou=True
+[142/180] N= 50 t=21  falha@  75  perdidas= 24 (teoria 24.5)  R= 1456.2 ms  restaurou=True
+[143/180] N= 50 t=22  falha@ 114  perdidas= 13 (teoria 24.5)  R= 1489.9 ms  restaurou=True
+[144/180] N= 50 t=23  falha@ 101  perdidas=  0 (teoria 24.5)  R= 1361.7 ms  restaurou=True
+[145/180] N= 50 t=24  falha@  51  perdidas=  0 (teoria 24.5)  R= 1360.2 ms  restaurou=True
+[146/180] N= 50 t=25  falha@ 140  perdidas= 39 (teoria 24.5)  R= 1392.7 ms  restaurou=True
+[147/180] N= 50 t=26  falha@  51  perdidas=  0 (teoria 24.5)  R= 1568.3 ms  restaurou=True
+[148/180] N= 50 t=27  falha@ 116  perdidas= 15 (teoria 24.5)  R= 1611.6 ms  restaurou=True
+[149/180] N= 50 t=28  falha@ 108  perdidas=  7 (teoria 24.5)  R= 1454.6 ms  restaurou=True
+[150/180] N= 50 t=29  falha@  62  perdidas= 11 (teoria 24.5)  R= 1479.9 ms  restaurou=True
+[151/180] N=100 t= 0  falha@ 161  perdidas= 60 (teoria 49.5)  R= 1458.7 ms  restaurou=True
+[152/180] N=100 t= 1  falha@ 214  perdidas= 13 (teoria 49.5)  R= 1464.8 ms  restaurou=True
+[153/180] N=100 t= 2  falha@ 101  perdidas=  0 (teoria 49.5)  R= 1460.2 ms  restaurou=True
+[154/180] N=100 t= 3  falha@ 179  perdidas= 78 (teoria 49.5)  R= 1474.8 ms  restaurou=True
+[155/180] N=100 t= 4  falha@ 206  perdidas=  5 (teoria 49.5)  R= 1526.2 ms  restaurou=True
+[156/180] N=100 t= 5  falha@ 128  perdidas= 27 (teoria 49.5)  R= 1464.2 ms  restaurou=True
+[157/180] N=100 t= 6  falha@ 191  perdidas= 90 (teoria 49.5)  R= 1532.5 ms  restaurou=True
+[158/180] N=100 t= 7  falha@ 167  perdidas= 66 (teoria 49.5)  R= 1437.4 ms  restaurou=True
+[159/180] N=100 t= 8  falha@ 105  perdidas=  4 (teoria 49.5)  R= 1473.4 ms  restaurou=True
+[160/180] N=100 t= 9  falha@ 283  perdidas= 82 (teoria 49.5)  R= 1423.8 ms  restaurou=True
+[161/180] N=100 t=10  falha@ 126  perdidas= 25 (teoria 49.5)  R= 1472.8 ms  restaurou=True
+[162/180] N=100 t=11  falha@ 281  perdidas= 80 (teoria 49.5)  R= 1554.2 ms  restaurou=True
+[163/180] N=100 t=12  falha@ 158  perdidas= 57 (teoria 49.5)  R= 1539.8 ms  restaurou=True
+[164/180] N=100 t=13  falha@ 289  perdidas= 88 (teoria 49.5)  R= 1446.6 ms  restaurou=True
+[165/180] N=100 t=14  falha@ 213  perdidas= 12 (teoria 49.5)  R= 1405.9 ms  restaurou=True
+[166/180] N=100 t=15  falha@ 126  perdidas= 25 (teoria 49.5)  R= 1387.2 ms  restaurou=True
+[167/180] N=100 t=16  falha@ 137  perdidas= 36 (teoria 49.5)  R= 1347.5 ms  restaurou=True
+[168/180] N=100 t=17  falha@ 109  perdidas=  8 (teoria 49.5)  R= 1436.9 ms  restaurou=True
+[169/180] N=100 t=18  falha@ 241  perdidas= 40 (teoria 49.5)  R= 1423.9 ms  restaurou=True
+[170/180] N=100 t=19  falha@ 114  perdidas= 13 (teoria 49.5)  R= 1383.3 ms  restaurou=True
+[171/180] N=100 t=20  falha@ 111  perdidas= 10 (teoria 49.5)  R= 1437.3 ms  restaurou=True
+[172/180] N=100 t=21  falha@ 208  perdidas=  7 (teoria 49.5)  R= 1522.0 ms  restaurou=True
+[173/180] N=100 t=22  falha@ 228  perdidas= 27 (teoria 49.5)  R= 1479.8 ms  restaurou=True
+[174/180] N=100 t=23  falha@ 204  perdidas=  3 (teoria 49.5)  R= 1372.3 ms  restaurou=True
+[175/180] N=100 t=24  falha@ 273  perdidas= 72 (teoria 49.5)  R= 1493.3 ms  restaurou=True
+[176/180] N=100 t=25  falha@ 284  perdidas= 83 (teoria 49.5)  R= 1500.2 ms  restaurou=True
+[177/180] N=100 t=26  falha@ 214  perdidas= 13 (teoria 49.5)  R= 1416.7 ms  restaurou=True
+[178/180] N=100 t=27  falha@ 241  perdidas= 40 (teoria 49.5)  R= 1356.7 ms  restaurou=True
+[179/180] N=100 t=28  falha@ 194  perdidas= 93 (teoria 49.5)  R= 1436.2 ms  restaurou=True
+[180/180] N=100 t=29  falha@ 234  perdidas= 33 (teoria 49.5)  R= 1574.8 ms  restaurou=True
+  -> results/failure.csv (180 linhas)
+===== D: validacao ponta a ponta (18 execucoes por N) =====
+[  1/144] N=  1 r= 0  wall=  7.24s    6.03 ms/chamada  falhas= 0  refeitas=   0
+[  2/144] N=  1 r= 1  wall=  8.74s    7.28 ms/chamada  falhas= 1  refeitas=   0
+[  3/144] N=  1 r= 2  wall= 12.87s   10.73 ms/chamada  falhas= 5  refeitas=   0
+[  4/144] N=  1 r= 3  wall=  8.66s    7.22 ms/chamada  falhas= 2  refeitas=   0
+[  5/144] N=  1 r= 4  wall=  8.42s    7.02 ms/chamada  falhas= 2  refeitas=   0
+[  6/144] N=  1 r= 5  wall=  7.08s    5.90 ms/chamada  falhas= 1  refeitas=   0
+[  7/144] N=  1 r= 6  wall=  5.60s    4.67 ms/chamada  falhas= 0  refeitas=   0
+[  8/144] N=  1 r= 7  wall=  7.17s    5.97 ms/chamada  falhas= 1  refeitas=   0
+[  9/144] N=  1 r= 8  wall=  5.44s    4.53 ms/chamada  falhas= 0  refeitas=   0
+[ 10/144] N=  1 r= 9  wall=  5.40s    4.50 ms/chamada  falhas= 0  refeitas=   0
+[ 11/144] N=  1 r=10  wall=  7.15s    5.96 ms/chamada  falhas= 1  refeitas=   0
+[ 12/144] N=  1 r=11  wall= 10.15s    8.46 ms/chamada  falhas= 3  refeitas=   0
+[ 13/144] N=  1 r=12  wall=  6.90s    5.75 ms/chamada  falhas= 1  refeitas=   0
+[ 14/144] N=  1 r=13  wall=  8.32s    6.93 ms/chamada  falhas= 2  refeitas=   0
+[ 15/144] N=  1 r=14  wall=  9.79s    8.15 ms/chamada  falhas= 3  refeitas=   0
+[ 16/144] N=  1 r=15  wall=  8.32s    6.94 ms/chamada  falhas= 2  refeitas=   0
+[ 17/144] N=  1 r=16  wall=  6.95s    5.79 ms/chamada  falhas= 1  refeitas=   0
+[ 18/144] N=  1 r=17  wall=  5.34s    4.45 ms/chamada  falhas= 0  refeitas=   0
+[ 19/144] N=  5 r= 0  wall=  3.36s    2.80 ms/chamada  falhas= 0  refeitas=   0
+[ 20/144] N=  5 r= 1  wall=  6.20s    5.17 ms/chamada  falhas= 2  refeitas=   3
+[ 21/144] N=  5 r= 2  wall=  4.79s    3.99 ms/chamada  falhas= 1  refeitas=   3
+[ 22/144] N=  5 r= 3  wall=  6.25s    5.21 ms/chamada  falhas= 2  refeitas=   0
+[ 23/144] N=  5 r= 4  wall=  7.72s    6.43 ms/chamada  falhas= 3  refeitas=   9
+[ 24/144] N=  5 r= 5  wall=  4.78s    3.98 ms/chamada  falhas= 1  refeitas=   2
+[ 25/144] N=  5 r= 6  wall=  3.42s    2.85 ms/chamada  falhas= 0  refeitas=   0
+[ 26/144] N=  5 r= 7  wall=  4.82s    4.02 ms/chamada  falhas= 1  refeitas=   0
+[ 27/144] N=  5 r= 8  wall=  4.80s    4.00 ms/chamada  falhas= 1  refeitas=   4
+[ 28/144] N=  5 r= 9  wall=  4.78s    3.98 ms/chamada  falhas= 1  refeitas=   1
+[ 29/144] N=  5 r=10  wall=  3.36s    2.80 ms/chamada  falhas= 0  refeitas=   0
+[ 30/144] N=  5 r=11  wall=  4.87s    4.06 ms/chamada  falhas= 1  refeitas=   1
+[ 31/144] N=  5 r=12  wall= 10.45s    8.70 ms/chamada  falhas= 5  refeitas=  12
+[ 32/144] N=  5 r=13  wall=  4.89s    4.07 ms/chamada  falhas= 1  refeitas=   1
+[ 33/144] N=  5 r=14  wall=  3.51s    2.92 ms/chamada  falhas= 0  refeitas=   0
+[ 34/144] N=  5 r=15  wall=  6.23s    5.19 ms/chamada  falhas= 2  refeitas=   7
+[ 35/144] N=  5 r=16  wall=  7.63s    6.36 ms/chamada  falhas= 3  refeitas=  10
+[ 36/144] N=  5 r=17  wall=  6.17s    5.14 ms/chamada  falhas= 2  refeitas=   4
+[ 37/144] N= 10 r= 0  wall=  3.13s    2.61 ms/chamada  falhas= 0  refeitas=   0
+[ 38/144] N= 10 r= 1  wall=  6.02s    5.02 ms/chamada  falhas= 2  refeitas=  10
+[ 39/144] N= 10 r= 2  wall=  4.55s    3.79 ms/chamada  falhas= 1  refeitas=   1
+[ 40/144] N= 10 r= 3  wall=  3.17s    2.64 ms/chamada  falhas= 0  refeitas=   0
+[ 41/144] N= 10 r= 4  wall=  3.17s    2.64 ms/chamada  falhas= 0  refeitas=   0
+[ 42/144] N= 10 r= 5  wall=  5.95s    4.96 ms/chamada  falhas= 2  refeitas=   9
+[ 43/144] N= 10 r= 6  wall=  8.99s    7.49 ms/chamada  falhas= 4  refeitas=  19
+[ 44/144] N= 10 r= 7  wall=  4.60s    3.83 ms/chamada  falhas= 1  refeitas=   1
+[ 45/144] N= 10 r= 8  wall=  7.45s    6.21 ms/chamada  falhas= 3  refeitas=   9
+[ 46/144] N= 10 r= 9  wall=  4.57s    3.81 ms/chamada  falhas= 1  refeitas=   7
+[ 47/144] N= 10 r=10  wall=  3.19s    2.66 ms/chamada  falhas= 0  refeitas=   0
+[ 48/144] N= 10 r=11  wall=  3.21s    2.68 ms/chamada  falhas= 0  refeitas=   0
+[ 49/144] N= 10 r=12  wall=  7.60s    6.33 ms/chamada  falhas= 3  refeitas=  12
+[ 50/144] N= 10 r=13  wall=  3.20s    2.67 ms/chamada  falhas= 0  refeitas=   0
+[ 51/144] N= 10 r=14  wall=  7.69s    6.41 ms/chamada  falhas= 3  refeitas=  18
+[ 52/144] N= 10 r=15  wall=  4.83s    4.02 ms/chamada  falhas= 1  refeitas=   5
+[ 53/144] N= 10 r=16  wall=  6.08s    5.07 ms/chamada  falhas= 2  refeitas=  17
+[ 54/144] N= 10 r=17  wall=  4.67s    3.89 ms/chamada  falhas= 1  refeitas=   8
+[ 55/144] N= 25 r= 0  wall=  5.95s    4.96 ms/chamada  falhas= 2  refeitas=  45
+[ 56/144] N= 25 r= 1  wall=  3.05s    2.54 ms/chamada  falhas= 0  refeitas=   0
+[ 57/144] N= 25 r= 2  wall=  5.98s    4.99 ms/chamada  falhas= 2  refeitas=  10
+[ 58/144] N= 25 r= 3  wall=  6.36s    5.30 ms/chamada  falhas= 2  refeitas=  40
+[ 59/144] N= 25 r= 4  wall=  7.60s    6.33 ms/chamada  falhas= 3  refeitas=  53
+[ 60/144] N= 25 r= 5  wall=  3.06s    2.55 ms/chamada  falhas= 0  refeitas=   0
+[ 61/144] N= 25 r= 6  wall=  3.05s    2.55 ms/chamada  falhas= 0  refeitas=   0
+[ 62/144] N= 25 r= 7  wall=  3.15s    2.62 ms/chamada  falhas= 0  refeitas=   0
+[ 63/144] N= 25 r= 8  wall=  4.53s    3.78 ms/chamada  falhas= 1  refeitas=   2
+[ 64/144] N= 25 r= 9  wall=  8.92s    7.43 ms/chamada  falhas= 4  refeitas=  26
+[ 65/144] N= 25 r=10  wall=  6.13s    5.11 ms/chamada  falhas= 2  refeitas=  29
+[ 66/144] N= 25 r=11  wall=  3.07s    2.56 ms/chamada  falhas= 0  refeitas=   0
+[ 67/144] N= 25 r=12  wall= 10.31s    8.59 ms/chamada  falhas= 5  refeitas=  54
+[ 68/144] N= 25 r=13  wall=  3.06s    2.55 ms/chamada  falhas= 0  refeitas=   0
+[ 69/144] N= 25 r=14  wall=  4.59s    3.83 ms/chamada  falhas= 1  refeitas=  11
+[ 70/144] N= 25 r=15  wall=  3.09s    2.57 ms/chamada  falhas= 0  refeitas=   0
+[ 71/144] N= 25 r=16  wall=  4.51s    3.76 ms/chamada  falhas= 1  refeitas=   4
+[ 72/144] N= 25 r=17  wall=  4.49s    3.74 ms/chamada  falhas= 1  refeitas=   3
+[ 73/144] N= 50 r= 0  wall=  6.05s    5.04 ms/chamada  falhas= 2  refeitas=  62
+[ 74/144] N= 50 r= 1  wall=  4.64s    3.87 ms/chamada  falhas= 1  refeitas=  40
+[ 75/144] N= 50 r= 2  wall=  4.71s    3.92 ms/chamada  falhas= 1  refeitas=  41
+[ 76/144] N= 50 r= 3  wall=  5.88s    4.90 ms/chamada  falhas= 2  refeitas=  61
+[ 77/144] N= 50 r= 4  wall=  4.50s    3.75 ms/chamada  falhas= 1  refeitas=   4
+[ 78/144] N= 50 r= 5  wall=  4.57s    3.80 ms/chamada  falhas= 1  refeitas=  48
+[ 79/144] N= 50 r= 6  wall=  6.17s    5.14 ms/chamada  falhas= 2  refeitas=  81
+[ 80/144] N= 50 r= 7  wall=  3.00s    2.50 ms/chamada  falhas= 0  refeitas=   0
+[ 81/144] N= 50 r= 8  wall=  4.40s    3.67 ms/chamada  falhas= 1  refeitas=   6
+[ 82/144] N= 50 r= 9  wall=  3.00s    2.50 ms/chamada  falhas= 0  refeitas=   0
+[ 83/144] N= 50 r=10  wall=  7.46s    6.22 ms/chamada  falhas= 3  refeitas=  85
+[ 84/144] N= 50 r=11  wall=  2.98s    2.49 ms/chamada  falhas= 0  refeitas=   0
+[ 85/144] N= 50 r=12  wall=  4.85s    4.04 ms/chamada  falhas= 1  refeitas=  25
+[ 86/144] N= 50 r=13  wall=  4.77s    3.98 ms/chamada  falhas= 1  refeitas=  12
+[ 87/144] N= 50 r=14  wall=  2.97s    2.48 ms/chamada  falhas= 0  refeitas=   0
+[ 88/144] N= 50 r=15  wall=  4.61s    3.84 ms/chamada  falhas= 1  refeitas=  33
+[ 89/144] N= 50 r=16  wall=  8.05s    6.71 ms/chamada  falhas= 3  refeitas=  85
+[ 90/144] N= 50 r=17  wall=  5.95s    4.96 ms/chamada  falhas= 2  refeitas=  55
+[ 91/144] N=100 r= 0  wall=  9.28s    7.73 ms/chamada  falhas= 4  refeitas= 176
+[ 92/144] N=100 r= 1  wall=  6.18s    5.15 ms/chamada  falhas= 2  refeitas=  94
+[ 93/144] N=100 r= 2  wall=  4.55s    3.80 ms/chamada  falhas= 1  refeitas=   5
+[ 94/144] N=100 r= 3  wall=  3.01s    2.51 ms/chamada  falhas= 0  refeitas=   0
+[ 95/144] N=100 r= 4  wall=  4.71s    3.92 ms/chamada  falhas= 1  refeitas=   9
+[ 96/144] N=100 r= 5  wall=  4.52s    3.76 ms/chamada  falhas= 1  refeitas=  59
+[ 97/144] N=100 r= 6  wall=  8.58s    7.15 ms/chamada  falhas= 2  refeitas=  58
+[ 98/144] N=100 r= 7  wall=  4.59s    3.82 ms/chamada  falhas= 1  refeitas=  86
+[ 99/144] N=100 r= 8  wall=  6.61s    5.51 ms/chamada  falhas= 2  refeitas=  83
+[100/144] N=100 r= 9  wall=  6.35s    5.29 ms/chamada  falhas= 2  refeitas=  60
+[101/144] N=100 r=10  wall=  4.93s    4.11 ms/chamada  falhas= 1  refeitas=  53
+[102/144] N=100 r=11  wall=  6.45s    5.37 ms/chamada  falhas= 2  refeitas= 159
+[103/144] N=100 r=12  wall=  3.01s    2.51 ms/chamada  falhas= 0  refeitas=   0
+[104/144] N=100 r=13  wall=  4.78s    3.98 ms/chamada  falhas= 1  refeitas=  72
+[105/144] N=100 r=14  wall=  2.95s    2.46 ms/chamada  falhas= 0  refeitas=   0
+[106/144] N=100 r=15  wall=  4.64s    3.87 ms/chamada  falhas= 1  refeitas=  83
+[107/144] N=100 r=16  wall=  9.39s    7.83 ms/chamada  falhas= 4  refeitas= 150
+[108/144] N=100 r=17  wall=  7.74s    6.45 ms/chamada  falhas= 3  refeitas= 143
+[109/144] N=200 r= 0  wall=  4.92s    4.10 ms/chamada  falhas= 1  refeitas= 116
+[110/144] N=200 r= 1  wall=  2.92s    2.44 ms/chamada  falhas= 0  refeitas=   0
+[111/144] N=200 r= 2  wall=  2.94s    2.45 ms/chamada  falhas= 0  refeitas=   0
+[112/144] N=200 r= 3  wall=  4.66s    3.88 ms/chamada  falhas= 1  refeitas=  95
+[113/144] N=200 r= 4  wall=  6.18s    5.15 ms/chamada  falhas= 2  refeitas=  91
+[114/144] N=200 r= 5  wall=  3.29s    2.74 ms/chamada  falhas= 0  refeitas=   0
+[115/144] N=200 r= 6  wall= 11.31s    9.43 ms/chamada  falhas= 4  refeitas= 325
+[116/144] N=200 r= 7  wall=  4.61s    3.84 ms/chamada  falhas= 1  refeitas=  47
+[117/144] N=200 r= 8  wall=  4.45s    3.71 ms/chamada  falhas= 1  refeitas=   1
+[118/144] N=200 r= 9  wall=  6.30s    5.25 ms/chamada  falhas= 2  refeitas= 198
+[119/144] N=200 r=10  wall=  4.39s    3.66 ms/chamada  falhas= 1  refeitas=  25
+[120/144] N=200 r=11  wall=  2.97s    2.47 ms/chamada  falhas= 0  refeitas=   0
+[121/144] N=200 r=12  wall=  3.01s    2.51 ms/chamada  falhas= 0  refeitas=   0
+[122/144] N=200 r=13  wall=  2.97s    2.48 ms/chamada  falhas= 0  refeitas=   0
+[123/144] N=200 r=14  wall=  4.67s    3.89 ms/chamada  falhas= 1  refeitas=  13
+[124/144] N=200 r=15  wall=  3.12s    2.60 ms/chamada  falhas= 0  refeitas=   0
+[125/144] N=200 r=16  wall=  7.38s    6.15 ms/chamada  falhas= 2  refeitas= 342
+[126/144] N=200 r=17  wall=  4.71s    3.93 ms/chamada  falhas= 1  refeitas= 179
+[127/144] N=400 r= 0  wall=  7.36s    6.13 ms/chamada  falhas= 2  refeitas= 615
+[128/144] N=400 r= 1  wall=  2.92s    2.44 ms/chamada  falhas= 0  refeitas=   0
+[129/144] N=400 r= 2  wall=  2.94s    2.45 ms/chamada  falhas= 0  refeitas=   0
+[130/144] N=400 r= 3  wall=  6.74s    5.62 ms/chamada  falhas= 2  refeitas= 307
+[131/144] N=400 r= 4  wall=  9.43s    7.85 ms/chamada  falhas= 4  refeitas= 279
+[132/144] N=400 r= 5  wall=  7.73s    6.44 ms/chamada  falhas= 2  refeitas= 216
+[133/144] N=400 r= 6  wall= 10.19s    8.50 ms/chamada  falhas= 4  refeitas= 637
+[134/144] N=400 r= 7  wall=  4.92s    4.10 ms/chamada  falhas= 1  refeitas= 213
+[135/144] N=400 r= 8  wall=  2.92s    2.43 ms/chamada  falhas= 0  refeitas=   0
+[136/144] N=400 r= 9  wall=  8.37s    6.98 ms/chamada  falhas= 3  refeitas= 487
+[137/144] N=400 r=10  wall=  5.31s    4.43 ms/chamada  falhas= 1  refeitas= 395
+[138/144] N=400 r=11  wall=  8.77s    7.31 ms/chamada  falhas= 3  refeitas= 295
+[139/144] N=400 r=12  wall=  5.80s    4.83 ms/chamada  falhas= 1  refeitas= 311
+[140/144] N=400 r=13  wall=  5.07s    4.22 ms/chamada  falhas= 1  refeitas= 310
+[141/144] N=400 r=14  wall=  5.01s    4.18 ms/chamada  falhas= 1  refeitas= 254
+[142/144] N=400 r=15  wall=  4.37s    3.64 ms/chamada  falhas= 1  refeitas=   5
+[143/144] N=400 r=16  wall=  6.35s    5.29 ms/chamada  falhas= 2  refeitas= 247
+[144/144] N=400 r=17  wall=  2.97s    2.48 ms/chamada  falhas= 0  refeitas=   0
+  -> results/endtoend.csv (144 linhas)
