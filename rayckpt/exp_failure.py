@@ -42,6 +42,8 @@ def run_trial(
     state_kb: int,
     cycles: int,
     rng: random.Random,
+    ckpt_latency_s: float = 0.0,
+    ckpt_mbps: float = 0.0,
 ) -> dict:
     total = max(40, cycles * interval)
     # Ponto de falha uniforme, depois de ao menos um ciclo completo de
@@ -54,6 +56,8 @@ def run_trial(
         checkpoint_every=interval,
         work_s=work_s,
         state_kb=state_kb,
+        ckpt_latency_s=ckpt_latency_s,
+        ckpt_mbps=ckpt_mbps,
     )
 
     latencies: list[float] = []
@@ -96,6 +100,8 @@ def run_trial(
         "ckpt_bytes": st["ckpt_bytes"],
         "final_calls_done": st["calls_done"],
         "restarted": st["restored"],
+        "ckpt_latency_s": ckpt_latency_s,
+        "ckpt_mbps": ckpt_mbps,
     }
 
 
@@ -106,6 +112,24 @@ def main() -> None:
     ap.add_argument("--state-kb", type=int, default=512)
     ap.add_argument("--cycles", type=int, default=3)
     ap.add_argument("--seed", type=int, default=20261024)
+    ap.add_argument(
+        "--ckpt-latency-ms",
+        type=float,
+        default=0.0,
+        help="latência fixa por checkpoint, em ms (0 = disco local)",
+    )
+    ap.add_argument(
+        "--ckpt-mbps",
+        type=float,
+        default=0.0,
+        help="vazão do storage de checkpoint, em MB/s (0 = disco local)",
+    )
+    ap.add_argument(
+        "--out",
+        type=str,
+        default="failure.csv",
+        help="nome do CSV em results/ (use outro nome para não sobrescrever a corrida principal)",
+    )
     ap.add_argument("--quick", action="store_true")
     args = ap.parse_args()
 
@@ -126,6 +150,8 @@ def main() -> None:
                 trial=trial,
                 work_s=args.work_ms / 1000.0,
                 state_kb=args.state_kb,
+                ckpt_latency_s=args.ckpt_latency_ms / 1000.0,
+                ckpt_mbps=args.ckpt_mbps,
                 cycles=args.cycles,
                 rng=rng,
             )
@@ -137,7 +163,7 @@ def main() -> None:
                 f"(teoria {r['expected_lost_theory']:.1f})  "
                 f"R={r['R_s'] * 1e3:7.1f} ms  restaurou={r['restarted']}"
             )
-    write_csv(RESULTS / "failure.csv", rows)
+    write_csv(RESULTS / args.out, rows)
     ray.shutdown()
 
 

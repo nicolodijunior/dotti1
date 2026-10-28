@@ -46,6 +46,8 @@ def run_one(
     mtbf_s: float,
     warmup: int,
     tag: str,
+    ckpt_latency_s: float = 0.0,
+    ckpt_mbps: float = 0.0,
 ) -> dict:
     """Executa `calls` chamadas úteis sob falhas de Poisson e mede o custo."""
     workdir = fresh_workdir(f"e2e-{tag}")
@@ -54,6 +56,8 @@ def run_one(
         checkpoint_every=interval,
         work_s=work_s,
         state_kb=state_kb,
+        ckpt_latency_s=ckpt_latency_s,
+        ckpt_mbps=ckpt_mbps,
     )
 
     # Aquecimento sem falhas: paga o custo de criação do actor e do primeiro
@@ -119,6 +123,8 @@ def run_one(
         "n_ckpt_last_incarnation": st["n_ckpt"],
         "ckpt_bytes": st["ckpt_bytes"],
         "final_calls_done": st["calls_done"],
+        "ckpt_latency_s": ckpt_latency_s,
+        "ckpt_mbps": ckpt_mbps,
     }
 
 
@@ -130,6 +136,31 @@ def main() -> None:
     ap.add_argument("--state-kb", type=int, default=4096)
     ap.add_argument("--mtbf-s", type=float, default=2.0)
     ap.add_argument("--warmup", type=int, default=20)
+    ap.add_argument(
+        "--ckpt-latency-ms",
+        type=float,
+        default=0.0,
+        help="latência fixa por checkpoint, em ms (0 = disco local)",
+    )
+    ap.add_argument(
+        "--ckpt-mbps",
+        type=float,
+        default=0.0,
+        help="vazão do storage de checkpoint, em MB/s (0 = disco local)",
+    )
+    ap.add_argument(
+        "--intervals",
+        type=str,
+        default="",
+        help="grade de N, separada por vírgula (padrão: 1,5,10,25,50,100,200,400). "
+        "Com δ maior o ótimo se desloca para a direita e a grade precisa acompanhar.",
+    )
+    ap.add_argument(
+        "--out",
+        type=str,
+        default="endtoend.csv",
+        help="nome do CSV em results/ (use outro nome para não sobrescrever a corrida principal)",
+    )
     ap.add_argument("--quick", action="store_true")
     args = ap.parse_args()
 
@@ -137,6 +168,8 @@ def main() -> None:
     if args.quick:
         args.calls, args.runs = 300, 2
         intervals = [1, 25, 200]
+    if args.intervals:
+        intervals = [int(x) for x in args.intervals.split(",") if x.strip()]
 
     init_ray()
     rows: list[dict] = []
@@ -153,6 +186,8 @@ def main() -> None:
                 mtbf_s=args.mtbf_s,
                 warmup=args.warmup,
                 tag=f"{interval}-{run}",
+                ckpt_latency_s=args.ckpt_latency_ms / 1000.0,
+                ckpt_mbps=args.ckpt_mbps,
             )
             rows.append(r)
             done += 1
@@ -161,7 +196,7 @@ def main() -> None:
                 f"wall={r['wall_s']:6.2f}s  {r['wall_per_call_s'] * 1e3:6.2f} ms/chamada  "
                 f"falhas={r['n_crashes']:>2}  refeitas={r['rework_calls']:>4}"
             )
-    write_csv(RESULTS / "endtoend.csv", rows)
+    write_csv(RESULTS / args.out, rows)
     ray.shutdown()
 
 

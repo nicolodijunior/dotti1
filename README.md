@@ -173,13 +173,21 @@ uv run python -m rayckpt.analysis         # figuras + results/summary.md
 
 # versão rápida de cada um, para verificar que está tudo de pé (~1 min)
 uv run python -m rayckpt.run_all --quick
+
+# cenário de storage compartilhado: injeta latência + vazão no checkpoint.
+# `--out` é obrigatório na prática, senão sobrescreve a corrida principal.
+uv run python -m rayckpt.exp_endtoend \
+    --ckpt-latency-ms 30 --ckpt-mbps 120 \
+    --intervals 25,50,100,200,300,600 --out endtoend_remote.csv
 ```
 
 Saídas:
 
 - `results/*.csv` — dados brutos, uma linha por execução/ensaio
-- `results/summary.md` — parâmetros medidos e tabelas comparativas
-- `figures/*.png` — as quatro figuras
+- `results/summary.md` — parâmetros medidos, tabelas comparativas e a projeção
+  de N\* para storage compartilhado
+- `figures/*.png` — as quatro figuras (mais `fig5_validacao_remota.png`, se o
+  cenário de storage compartilhado tiver sido executado)
 
 ## 6. Resultados
 
@@ -265,7 +273,7 @@ isso cobre e o que não cobre:
 | morte do **worker** e restart pelo GCS | sim, real (`os._exit`) | sim |
 | morte do **nó** | não | o caso que mais dói |
 | rede entre nós | não (loopback) | latência, partição |
-| checkpoint em storage compartilhado | não (SSD local) | exigido pela doc do Ray |
+| checkpoint em storage compartilhado | simulado (latência + vazão injetadas) | exigido pela doc do Ray |
 | startup do worker | processo local | contêiner + runtime env |
 
 O caminho de falha em si é real e completo — `os._exit(1)` mata o processo, o
@@ -273,14 +281,39 @@ raylet detecta, publica no GCS, o GCS ressubmete a creation task, o construtor
 relê o checkpoint — e é esse caminho inteiro que os ~1,5 s de R cronometram.
 O que falta é a dimensão de **nó**.
 
-**Consequência prevista.** Num cluster real δ cresce bastante: um checkpoint de
-4 MiB em S3 ou NFS custa dezenas de milissegundos, não os ~2,6 ms do SSD local.
-Como N\* = √(2δM)/w e Daly mostra que R *não* entra no ótimo, a previsão é que
-**o intervalo ótimo cresça com √δ**: passar de δ = 2,6 ms para δ = 80 ms
-multiplica N\* por √(80/2,6) ≈ 5,5. Com MTBF de 1 h, o N\* ≈ 1760 medido aqui
-viraria ≈ 9700. A varredura de três tamanhos de estado (64 / 512 / 4096 KiB) do
-Experimento A é a evidência parcial disso: δ escala com o estado, e o ótimo
-acompanha.
+**O δ medido é o do disco local, que é o piso otimista.** A doc do Ray pede que
+o checkpoint esteja acessível a todo o cluster, e num storage compartilhado δ é
+dominado por latência e vazão de rede, não por disco. Ajustando o δ medido nos
+três tamanhos de estado ao modelo δ = latência + bytes/vazão, o storage desta
+máquina é **0,66 ms + 2181 MB/s** — compatível com NVMe local e uma a duas
+ordens de grandeza mais rápido que S3 ou EFS.
+
+Como N\* = √(2δM)/w e Daly mostra que R *não* entra no ótimo, **o intervalo
+ótimo cresce com √δ**: usar a frequência que o disco local sugere é
+checkpointar demais. O `results/summary.md` traz a projeção de N\* para três
+perfis de storage (EFS/NFS, S3, S3 cross-region) e quatro tamanhos de estado,
+reportada em τ\* (segundos) porque N\* em chamadas só é comparável a w fixo — e
+o w = 2,45 ms das nossas chamadas sintéticas é duas a três ordens de grandeza
+menor que uma tool call real.
+
+**Isso foi testado, não só projetado.** O actor aceita `--ckpt-latency-ms` e
+`--ckpt-mbps`, que injetam latência e vazão no caminho crítico do checkpoint
+(e também na leitura, na recuperação). Repetindo o Experimento D com o perfil
+de S3 (30 ms + 120 MB/s sobre 4 MiB de estado), δ sobe de 2,59 ms para
+**67,5 ms — 26× o disco local** — e o modelo continua valendo:
+
+| | valor |
+|---|---|
+| N\* previsto por Daly com esse δ | 206 |
+| N\* medido (ajuste a + b/N + c·N) | 184, IC 95% [152, 302] |
+| δ recuperado do ajuste (coeficiente `b`) | 70,9 ms contra 67,5 ms previstos |
+| falhas reais injetadas / chamadas refeitas | 114 / 13100 |
+
+O previsto cai dentro do IC 95% do medido e o ajuste recupera δ a partir dos
+dados com 5% de erro, num regime em que δ é dominado pela latência do storage
+e não pelo disco (`figures/fig5_validacao_remota.png`). A projeção da tabela de
+cenários, portanto, não é extrapolação cega: é a aplicação de uma fórmula
+validada em dois regimes de δ distintos.
 - **Estado de tamanho fixo.** δ é mantido ~constante de propósito, porque é a
   hipótese dos modelos de Young e Daly. Um agente real acumula contexto, então
   δ cresce ao longo da execução — o ótimo passaria a ser uma função do tempo, e

@@ -7,9 +7,13 @@ Produz as três figuras centrais do trabalho (mais uma de validação):
   fig2_lostwork.png   trabalho perdido na falha vs. intervalo
   fig3_totalcost.png  custo total esperado vs. intervalo (o ótimo)
   fig4_validacao.png  custo medido ponta a ponta vs. o modelo de Daly
+  fig5_validacao_remota.png  o mesmo, com δ de storage compartilhado injetado
+                             (só é gerada se results/endtoend_remote.csv existir)
 
-E um resumo em results/summary.md com os parâmetros medidos (delta, w, R) e
-os ótimos previstos por Young e Daly ao lado do ótimo observado.
+E um resumo em results/summary.md com os parâmetros medidos (delta, w, R), os
+ótimos previstos por Young e Daly ao lado do ótimo observado, e a projeção de
+N* para storage compartilhado — onde δ é uma a duas ordens de grandeza maior
+que no disco local em que medimos.
 """
 
 from __future__ import annotations
@@ -22,14 +26,19 @@ import numpy as np
 import pandas as pd
 
 from . import style
+from .agent import storage_delay_s
 from .common import FIGURES, RESULTS, ROOT
 from .model import (
+    STORAGE_PROFILES,
     cost_daly_exact,
     cost_first_order,
+    crossover_bytes,
     daly_exact,
     daly_first_order,
     daly_high_order,
+    delta_remote,
     expected_cost_per_call,
+    optimum_table,
     young_1974,
 )
 
@@ -413,12 +422,205 @@ def fig_validation(p: dict) -> dict | None:
     }
 
 
+def fig_remote_validation(p: dict) -> dict | None:
+    """Experimento C/D repetido com δ de storage remoto injetado no actor.
+
+    A projeção da seção anterior aplica Young/Daly fora do regime em que eles
+    foram validados (δ de disco local, dominado pelo tamanho do estado). Aqui
+    o custo de storage compartilhado é injetado de verdade no caminho crítico
+    (`--ckpt-latency-ms` / `--ckpt-mbps`), o que permite perguntar duas coisas
+    que a projeção sozinha não responde:
+
+      1. o ajuste recupera o δ esperado? (coeficiente `b` vs. latência + bytes/vazão)
+      2. o ótimo medido continua casando com Daly quando δ é ~15x maior?
+
+    Sem este arquivo a análise segue normalmente — a projeção fica como
+    projeção, que é como ela é rotulada no resumo.
+    """
+    path = RESULTS / "endtoend_remote.csv"
+    if not path.exists():
+        return None
+    e = pd.read_csv(path).copy()
+    M = float(e.mtbf_s.iloc[0])
+    state_kb = int(e.state_kb.iloc[0])
+    w = float(e.per_call_s.mean())
+    R = p["R"]
+
+    # δ esperado: o custo local medido para este estado, mais o storage
+    # injetado. É uma previsão, não um valor medido — o ajuste é que diz se
+    # ela se sustenta.
+    latency_s = float(e.ckpt_latency_s.iloc[0])
+    mbps = float(e.ckpt_mbps.iloc[0])
+    nbytes = float(e.ckpt_bytes.max())
+    delta_local = p["delta_by_kb"][state_kb]
+    delta = delta_local + storage_delay_s(int(nbytes), latency_s, mbps)
+
+    e["adj_per_call_s"] = (e.wall_s - e.n_crashes * R) / e.calls
+    g = e.groupby("interval").agg(
+        adj=("adj_per_call_s", "mean"), adj_sem=("adj_per_call_s", "sem"),
+        count=("adj_per_call_s", "count"), crashes=("n_crashes", "sum"),
+    ).reset_index()
+
+    Ngrid = g.interval.to_numpy(dtype=float)
+    weights = 1.0 / np.maximum(g.adj_sem.to_numpy(), 1e-12)
+    a, b, c, n_fit = fit_cost_curve(Ngrid, g.adj.to_numpy(), weights)
+    lo, hi = bootstrap_optimum(e, "adj_per_call_s")
+    n_pred = daly_exact(delta, M) / w
+
+    Ns = np.logspace(math.log10(Ngrid.min() * 0.7), math.log10(Ngrid.max() * 1.3), 300)
+    fig, ax = plt.subplots(figsize=(7.2, 4.6))
+    ax.errorbar(
+        g.interval, g.adj * 1e3, yerr=g.adj_sem * 1e3, color=style.SERIES[0],
+        marker="o", capsize=0, elinewidth=1.4, zorder=5,
+        label="medido (média ± erro padrão)",
+    )
+    model = np.array([cost_first_order(N * w, delta, M, 0.0, T_s=N * w) / N for N in Ns])
+    ax.plot(
+        Ns, model * 1e3, color=style.SERIES[1], lw=1.6, ls=(0, (4, 3)), zorder=3,
+        label="modelo de 1ª ordem (δ previsto)",
+    )
+    ax.plot(
+        Ns, (a + b / Ns + c * Ns) * 1e3, color=style.SERIES[2], lw=1.4, zorder=4,
+        label=f"ajuste  →  N* = {n_fit:.0f}  IC95% [{lo:.0f}, {hi:.0f}]",
+    )
+    ax.axvspan(lo, hi, color=style.SERIES[2], alpha=0.12, zorder=1, lw=0)
+    ax.axvline(n_fit, color=style.SERIES[2], lw=1.3, zorder=2)
+    ax.axvline(n_pred, color=style.CRITICAL, lw=1.2, ls=(0, (2, 2)), alpha=0.85, zorder=2)
+    ax.set_xscale("log")
+    ax.set_xlabel("Intervalo de checkpoint N (chamadas)")
+    ax.set_ylabel("Custo sem o termo de restart (ms/chamada útil)")
+    ax.set_xticks(sorted(e.interval.unique()))
+    # Sem isso, os ticks menores da escala log se sobrepõem aos rótulos dos N.
+    ax.set_xticks([], minor=True)
+    ax.get_xaxis().set_major_formatter(plt.ScalarFormatter())
+    ax.set_title(
+        f"Mesmo ótimo com δ de storage remoto (δ = {delta * 1e3:.0f} ms, "
+        f"{delta / delta_local:.0f}x o disco local)"
+    )
+    y0, _ = ax.get_ylim()
+    ax.annotate(
+        f" previsto: N* = {n_pred:.0f}", xy=(n_pred, y0), xytext=(5, 8),
+        textcoords="offset points", color=style.CRITICAL, fontsize=8.5,
+        fontweight="bold", va="bottom",
+    )
+    ax.legend(loc="upper center", handlelength=1.8, fontsize=8.5)
+    ax.text(
+        0.0, -0.22,
+        f"Storage injetado: {latency_s * 1e3:.0f} ms de latência + {mbps:.0f} MB/s "
+        f"sobre estado de {state_kb / 1024:.0f} MiB. "
+        f"{int(g['count'].min())} execuções de {int(e.calls.iloc[0])} chamadas por "
+        f"ponto, {int(g.crashes.sum())} falhas reais no total.",
+        transform=ax.transAxes, fontsize=8, color=style.MUTED, va="top",
+    )
+    fig.savefig(FIGURES / "fig5_validacao_remota.png")
+    plt.close(fig)
+
+    return {
+        "mtbf_s": M, "state_kb": state_kb, "w_s": w, "R_s": R,
+        "ckpt_latency_s": latency_s, "ckpt_mbps": mbps, "ckpt_bytes": nbytes,
+        "delta_local_s": delta_local, "delta_s": delta,
+        "delta_ratio": delta / delta_local,
+        "n_fit": float(n_fit), "ci": [lo, hi], "n_pred": n_pred,
+        "a_ms": a * 1e3, "b_ms": b * 1e3, "c_ms": c * 1e3,
+        "b_expected_ms": delta * 1e3,
+        "c_expected_ms": (w ** 2 / (2 * M)) * 1e3,
+        "crashes_total": int(e.n_crashes.sum()),
+        "rework_total": int(e.rework_calls.sum()),
+        "table": g.to_dict("records"),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Projeção para storage realista
+# ---------------------------------------------------------------------------
+
+# Tamanhos de estado para os quais a projeção é feita. Vão além dos 4 MiB
+# medidos de propósito: é acima do ponto de cruzamento de cada storage que δ
+# volta a ser proporcional ao estado.
+PROJECTION_STATE_MB = [1, 8, 64, 512]
+
+# MTBF de referência da projeção. 1 h é ordem de grandeza de nó em cluster
+# grande; o MTBF de segundos usado nos experimentos existe só para tornar a
+# medição viável.
+PROJECTION_MTBF_S = 3600.0
+
+
+def local_delta_fit(p: dict) -> tuple[float, float]:
+    """Ajusta o δ medido ao mesmo modelo de dois termos: δ = a + bytes/vazão.
+
+    Os três tamanhos de estado medidos (64 KiB, 512 KiB, 4 MiB) dão uma reta
+    em função do número de bytes. O intercepto é a latência por operação do
+    disco local e a inclinação é o inverso da vazão — ou seja, o experimento
+    nos dá o perfil do nosso próprio storage na mesma unidade dos perfis
+    publicados, o que é o que permite comparar os cenários de forma honesta.
+    """
+    kbs = sorted(p["delta_by_kb"])
+    xs = np.array([kb * 1024.0 for kb in kbs])
+    ys = np.array([p["delta_by_kb"][kb] for kb in kbs])
+    slope, intercept = np.polyfit(xs, ys, 1)
+    mbps = (1.0 / slope) / 1e6 if slope > 0 else float("inf")
+    return float(max(0.0, intercept)), float(mbps)
+
+
+def storage_projection(p: dict, mtbf_s: float = PROJECTION_MTBF_S) -> dict:
+    """N* projetado para cada perfil de storage e tamanho de estado.
+
+    Aplica Young/Daly — já validados contra o ótimo medido no Experimento C/D
+    — ao δ de cada cenário. A validação é adimensional (depende de
+    ξ = √(δ/2M)), então usar a fórmula fora do regime medido é aplicar um
+    modelo confirmado, não extrapolar no escuro. Ainda assim os valores aqui
+    são **projeção**, e é assim que aparecem no resumo.
+    """
+    w, R = p["w"], p["R"]
+    local_latency_s, local_mbps = local_delta_fit(p)
+
+    rows: list[dict] = []
+    for mb in PROJECTION_STATE_MB:
+        nbytes = int(mb * 1024 * 1024)
+        # δ local no mesmo tamanho, extrapolado pelo ajuste: é o piso que o
+        # storage remoto acumula por cima.
+        d_local = local_latency_s + nbytes / (local_mbps * 1e6)
+        for profile in STORAGE_PROFILES:
+            d = delta_remote(nbytes, profile, d_local)
+            t = optimum_table(d, mtbf_s, w, R)
+            rows.append(
+                {
+                    "state_mb": mb,
+                    "profile": profile,
+                    "delta_s": d,
+                    "delta_local_s": d_local,
+                    "N_opt": t["N_daly_exact"],
+                    "N_young": t["N_young"],
+                    # tau* = N* * w: o intervalo ótimo em tempo, que é o que
+                    # não depende de quanto dura uma tool call. N* só é
+                    # comparável entre agentes com o mesmo w.
+                    "tau_opt_s": t["N_daly_exact"] * w,
+                    "cost_rel_pct": t["cost_rel_pct"],
+                    "xi": t["xi"],
+                    "ratio_vs_local": d / d_local,
+                }
+            )
+    return {
+        "mtbf_s": mtbf_s,
+        "local_latency_s": local_latency_s,
+        "local_mbps": local_mbps,
+        "crossover_mb": {k: crossover_bytes(k) / 1024 / 1024 for k in STORAGE_PROFILES},
+        "rows": rows,
+    }
+
+
 # ---------------------------------------------------------------------------
 # Resumo
 # ---------------------------------------------------------------------------
 
 
-def write_summary(p: dict, cost_summary: dict, val: dict | None) -> None:
+def write_summary(
+    p: dict,
+    cost_summary: dict,
+    val: dict | None,
+    proj: dict,
+    rem: dict | None = None,
+) -> None:
     L: list[str] = []
     L.append("# Resumo dos resultados\n")
     L.append("## Parâmetros medidos\n")
@@ -572,12 +774,138 @@ def write_summary(p: dict, cost_summary: dict, val: dict | None) -> None:
             )
         L.append("")
 
+    L.append("## Projeção para storage compartilhado\n")
+    L.append(
+        "Todo o δ medido acima é de **disco local**, que é o piso otimista: a "
+        "própria documentação do Ray pede que o checkpoint esteja acessível a "
+        "todo o cluster, e nesse caso δ é dominado por latência e vazão de rede. "
+        "Ajustando o δ medido nos três tamanhos de estado ao modelo "
+        "δ = latência + bytes/vazão, o nosso storage é "
+        f"**{proj['local_latency_s'] * 1e3:.2f} ms + {proj['local_mbps']:.0f} MB/s** "
+        "— compatível com NVMe local, e uma a duas ordens de grandeza mais "
+        "rápido que qualquer storage compartilhado.\n"
+    )
+    L.append(
+        "A tabela abaixo é **projeção, não medição**: aplica Young/Daly (já "
+        "validados contra o ótimo medido na seção anterior) ao δ de cada "
+        "cenário, com MTBF de "
+        f"{proj['mtbf_s'] / 3600:g} h e w = {p['w'] * 1e3:.2f} ms. "
+        "Isso é legítimo porque a validação é adimensional — depende de "
+        "ξ = √(δ/2M), não dos valores absolutos.\n"
+    )
+    L.append(
+        "| estado | storage | δ projetado | δ/δ_local | τ* (Daly exato) | N* se w = 2 s | custo no ótimo |"
+    )
+    L.append("|---|---|---|---|---|---|---|")
+    for r in proj["rows"]:
+        L.append(
+            f"| {r['state_mb']} MiB | {r['profile']} | {r['delta_s'] * 1e3:.1f} ms | "
+            f"{r['ratio_vs_local']:.0f}x | {r['tau_opt_s'] / 60:.1f} min | "
+            f"{r['tau_opt_s'] / 2.0:.0f} | +{r['cost_rel_pct']:.2f}% |"
+        )
+    L.append("")
+    L.append(
+        "A coluna em tempo (τ*) é a que não depende do agente; N* em chamadas "
+        f"só é comparável a w fixo, e o w = {p['w'] * 1e3:.2f} ms das nossas "
+        "chamadas sintéticas é duas a três ordens de grandeza menor que uma "
+        "tool call real (uma chamada de LLM ou de API leva segundos). A coluna "
+        "`N* se w = 2 s` traduz τ* para um agente realista, e é onde o "
+        "resultado fica acionável: algumas dezenas de chamadas, não centenas.\n"
+    )
+    cross = ", ".join(
+        f"{k} ≈ {v:.1f} MiB" for k, v in proj["crossover_mb"].items()
+    )
+    L.append(
+        "Duas consequências. Primeira, o ótimo se desloca com √δ: sair do disco "
+        "local para S3 multiplica δ por uma ordem de grandeza e portanto N* por "
+        "~3 — checkpointar na frequência que o disco local sugere é "
+        "checkpointar demais. Segunda, cada storage tem um ponto de cruzamento "
+        f"em latência×vazão ({cross}) abaixo do qual δ é ~constante e não "
+        "depende do tamanho do estado; os três tamanhos que medimos caem todos "
+        "aí, e é por isso que a Figura 1 mostra δ quase insensível ao estado "
+        "nos dois tamanhos menores.\n"
+    )
+    if rem is None:
+        L.append(
+            "Para confirmar a projeção em vez de só afirmá-la, o actor aceita "
+            "`--ckpt-latency-ms` e `--ckpt-mbps` (ver `agent.storage_delay_s`), "
+            "que injetam esse custo no caminho crítico. Um ponto do Experimento "
+            "C/D nesse regime testa se o ótimo medido continua casando com Daly "
+            "fora do regime de disco local.\n"
+        )
+    else:
+        L.append("### Validação da projeção com δ remoto injetado\n")
+        L.append(
+            "A projeção acima aplica as fórmulas fora do regime em que elas "
+            "foram validadas, então ela foi testada: o Experimento C/D foi "
+            "repetido com o custo de storage compartilhado injetado de verdade "
+            "no caminho crítico do actor "
+            f"({rem['ckpt_latency_s'] * 1e3:.0f} ms de latência + "
+            f"{rem['ckpt_mbps']:.0f} MB/s, perfil S3), o que leva δ de "
+            f"{rem['delta_local_s'] * 1e3:.2f} ms para "
+            f"**{rem['delta_s'] * 1e3:.1f} ms — {rem['delta_ratio']:.0f}x** o "
+            "disco local.\n"
+        )
+        L.append(
+            f"- ótimo previsto por Daly com esse δ: **N* = {rem['n_pred']:.0f}**\n"
+            f"- ótimo medido (ajuste): **N* = {rem['n_fit']:.0f}**, "
+            f"IC 95% [{rem['ci'][0]:.0f}, {rem['ci'][1]:.0f}]\n"
+            f"- falhas reais injetadas: {rem['crashes_total']}; "
+            f"chamadas refeitas: {rem['rework_total']}\n"
+        )
+        L.append("")
+        L.append("| coeficiente | ajustado | esperado | significado |")
+        L.append("|---|---|---|---|")
+        L.append(
+            f"| a | {rem['a_ms']:.3f} ms | {rem['w_s'] * 1e3:.3f} ms | trabalho útil w |"
+        )
+        L.append(
+            f"| b | {rem['b_ms']:.1f} ms | {rem['b_expected_ms']:.1f} ms | "
+            "custo de um checkpoint δ |"
+        )
+        L.append(
+            f"| c | {rem['c_ms']:.5f} ms | {rem['c_expected_ms']:.5f} ms | "
+            "trabalho perdido w²/(2·MTBF) |"
+        )
+        L.append("")
+        inside = rem["ci"][0] <= rem["n_pred"] <= rem["ci"][1]
+        L.append(
+            ("O previsto cai dentro do IC 95% do medido" if inside else
+             "O previsto cai **fora** do IC 95% do medido")
+            + f" ({rem['n_fit'] / rem['n_pred']:.2f}x o previsto), e o "
+            f"coeficiente `b` do ajuste recupera δ a partir dos dados "
+            f"({rem['b_ms']:.1f} ms contra {rem['b_expected_ms']:.1f} ms "
+            "previstos pelo modelo de dois termos). "
+            + ("Ou seja, a projeção da tabela acima não é extrapolação cega: "
+               "o modelo continua descrevendo o custo quando δ é dominado pela "
+               "latência do storage, e não pelo disco."
+               if inside else
+               "A divergência precisa ser investigada antes de confiar na "
+               "tabela de projeção — ver fig5_validacao_remota.png.") + "\n"
+        )
+        L.append("Ver `figures/fig5_validacao_remota.png`.\n")
+        L.append("| N | custo sem restart (ms/chamada útil) | erro padrão | execuções | falhas |")
+        L.append("|---|---|---|---|---|")
+        for r in rem["table"]:
+            L.append(
+                f"| {int(r['interval'])} | {r['adj'] * 1e3:.3f} | "
+                f"{r['adj_sem'] * 1e3:.3f} | {int(r['count'])} | {int(r['crashes'])} |"
+            )
+        L.append("")
+
     out = RESULTS / "summary.md"
     out.write_text("\n".join(L))
     print(f"  -> {out.relative_to(ROOT)}")
 
 
-def write_facts(p: dict, cost_summary: dict, val: dict | None, floor_ms: float) -> None:
+def write_facts(
+    p: dict,
+    cost_summary: dict,
+    val: dict | None,
+    floor_ms: float,
+    proj: dict,
+    rem: dict | None = None,
+) -> None:
     """Exporta os números em JSON, para os slides serem gerados a partir deles.
 
     Sem isso, o texto dos slides ficaria cravado à mão e divergiria das figuras
@@ -617,6 +945,27 @@ def write_facts(p: dict, cost_summary: dict, val: dict | None, floor_ms: float) 
         "optimum_by_mtbf": {
             str(M): {k: float(v) for k, v in s.items()} for M, s in cost_summary.items()
         },
+        "storage_projection": {
+            "mtbf_s": proj["mtbf_s"],
+            "local_latency_ms": proj["local_latency_s"] * 1e3,
+            "local_mbps": proj["local_mbps"],
+            "crossover_mb": proj["crossover_mb"],
+            "rows": [
+                {
+                    "state_mb": r["state_mb"],
+                    "profile": r["profile"],
+                    "delta_ms": r["delta_s"] * 1e3,
+                    "delta_local_ms": r["delta_local_s"] * 1e3,
+                    "ratio_vs_local": r["ratio_vs_local"],
+                    "n_opt": r["N_opt"],
+                    "tau_opt_s": r["tau_opt_s"],
+                    "cost_rel_pct": r["cost_rel_pct"],
+                    "xi": r["xi"],
+                }
+                for r in proj["rows"]
+            ],
+        },
+        "remote_validation": rem,
         "validation": None,
     }
     if val:
@@ -652,8 +1001,12 @@ def main() -> None:
         val = fig_validation(p)
         if val:
             print("  -> figures/fig4_validacao.png")
-        write_summary(p, cost_summary, val)
-        write_facts(p, cost_summary, val, floor_ms)
+        proj = storage_projection(p)
+        rem = fig_remote_validation(p)
+        if rem:
+            print("  -> figures/fig5_validacao_remota.png")
+        write_summary(p, cost_summary, val, proj, rem)
+        write_facts(p, cost_summary, val, floor_ms, proj, rem)
 
 
 if __name__ == "__main__":

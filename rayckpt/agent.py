@@ -59,6 +59,22 @@ def busy_work(duration_s: float) -> int:
     return spins
 
 
+def storage_delay_s(nbytes: int, latency_s: float, mbps: float) -> float:
+    """Custo simulado de mover `nbytes` para um storage remoto.
+
+    Dois termos, como em qualquer storage real: uma latência fixa por
+    operação (RTT, handshake, commit) e uma parcela proporcional ao tamanho
+    (`nbytes / vazão`). O ponto de cruzamento entre os dois fica em
+    `latency_s * mbps` bytes — abaixo dele δ é dominado pela latência e
+    praticamente não depende do tamanho do estado; acima, δ é proporcional ao
+    estado, que é a hipótese usada pelas fórmulas de Young e Daly.
+    """
+    if latency_s <= 0.0 and mbps <= 0.0:
+        return 0.0
+    transfer_s = (nbytes / (mbps * 1e6)) if mbps > 0.0 else 0.0
+    return max(0.0, latency_s) + transfer_s
+
+
 # ---------------------------------------------------------------------------
 # Estado do agente
 # ---------------------------------------------------------------------------
@@ -108,6 +124,14 @@ class ToolCallingAgent:
     history_len:
         Quantos resultados de ferramenta manter no histórico (limitado, para
         que o tamanho do estado não cresça sem limite ao longo da execução).
+    ckpt_latency_s:
+        Latência fixa por operação de checkpoint, somada ao custo do disco
+        local. Modela o RTT de um storage compartilhado (S3, EFS/NFS), que é
+        onde um checkpoint de verdade precisa ficar para estar acessível a
+        todo o cluster. `0.0` reproduz o cenário de disco local.
+    ckpt_mbps:
+        Vazão do storage, em MB/s. Produz a parcela de δ proporcional ao
+        tamanho do estado (`bytes / vazão`). `0.0` desativa essa parcela.
     """
 
     def __init__(
@@ -117,16 +141,20 @@ class ToolCallingAgent:
         work_s: float = 0.002,
         state_kb: int = 512,
         history_len: int = 64,
+        ckpt_latency_s: float = 0.0,
+        ckpt_mbps: float = 0.0,
     ) -> None:
-        self.workdir = Path(workdir)
-        self.workdir.mkdir(parents=True, exist_ok=True)
-        self.ckpt_path = self.workdir / "agent.ckpt"
-        self.crash_marker = self.workdir / "crash.json"
+        self.workdir = Path(workdir) # objeto Path com o diretorio
+        self.workdir.mkdir(parents=True, exist_ok=True) # cria a pasta com o caminho workdir
+        self.ckpt_path = self.workdir / "agent.ckpt" # monta o caminho do path para checkpoint
+        self.crash_marker = self.workdir / "crash.json" # monta o caminho de crasch_marker
 
-        self.checkpoint_every = int(checkpoint_every)
-        self.work_s = float(work_s)
-        self.state_kb = int(state_kb)
-        self.history_len = int(history_len)
+        self.checkpoint_every = int(checkpoint_every) # cria uma variavel para controlar a frequencia dos checkpoints
+        self.work_s = float(work_s) # guarda a duracao da call da tool falsa
+        self.state_kb = int(state_kb) # guarda o custo do checkpoint que é tamanho do scratch em kb
+        self.history_len = int(history_len) # guarda quantos resultados manter no histórico (tool_result)
+        self.ckpt_latency_s = float(ckpt_latency_s) # RTT fixo do storage remoto
+        self.ckpt_mbps = float(ckpt_mbps) # vazão do storage remoto, em MB/s
 
         # Métricas desta encarnação (zeram a cada restart, de propósito:
         # o driver é quem agrega o custo ao longo de toda a execução).
@@ -136,10 +164,17 @@ class ToolCallingAgent:
         self.incarnation_pid = os.getpid()
 
         # --- recuperação: este é o ponto central do padrão recomendado ---
-        t0 = time.perf_counter()
-        if self.ckpt_path.exists():
-            with open(self.ckpt_path, "rb") as f:
-                self.state = pickle.load(f)
+        t0 = time.perf_counter() # t0 é um marco inicial de tempo, puxa um valor de tempo atual de um cronometro intenro
+        if self.ckpt_path.exists(): # se existe um arquivo de checkpoint
+            # A leitura paga a mesma latência e vazão da gravação: quem grava
+            # em storage remoto também *lê* de storage remoto na recuperação.
+            time.sleep(
+                storage_delay_s(
+                    self.ckpt_path.stat().st_size, self.ckpt_latency_s, self.ckpt_mbps
+                )
+            )
+            with open(self.ckpt_path, "rb") as f: # abre o arquivo read binary
+                self.state = pickle.load(f) #
             self.restored = True
         else:
             self.state = AgentState(
@@ -195,10 +230,13 @@ class ToolCallingAgent:
     def _save_checkpoint(self) -> float:
         """Gravação atômica e durável do estado. Devolve o custo em segundos.
 
-        `fsync` + `os.replace` é o que torna δ realista: um checkpoint que
-        fica no cache da página não sobrevive à queda do nó, e a doc do Ray
-        alerta que o checkpoint precisa estar acessível a todo o cluster
-        (aqui, execução de um nó só, o disco local faz esse papel).
+        `fsync` + `os.replace` garantem durabilidade: um checkpoint que fica
+        no cache da página não sobrevive à queda do nó. Mas durabilidade local
+        não é suficiente — a doc do Ray alerta que o checkpoint precisa estar
+        acessível a todo o cluster, e num storage compartilhado δ é dominado
+        pela latência e pela vazão da rede, não pelo disco. `ckpt_latency_s` e
+        `ckpt_mbps` injetam esse custo (ver `storage_delay_s`); com os dois em
+        zero, δ é o do disco local.
         """
         t0 = time.perf_counter()
         tmp = self.ckpt_path.with_suffix(".tmp")
@@ -206,7 +244,11 @@ class ToolCallingAgent:
             pickle.dump(self.state, f, protocol=pickle.HIGHEST_PROTOCOL)
             f.flush()
             os.fsync(f.fileno())
+            nbytes = f.tell()
         os.replace(tmp, self.ckpt_path)
+        # Dentro da janela cronometrada de propósito: para o driver, δ é o
+        # tempo que o checkpoint bloqueia o caminho crítico do agente.
+        time.sleep(storage_delay_s(nbytes, self.ckpt_latency_s, self.ckpt_mbps))
         dt = time.perf_counter() - t0
         self.t_ckpt += dt
         self.n_ckpt += 1
@@ -263,4 +305,6 @@ class ToolCallingAgent:
             "pid": self.incarnation_pid,
             "ckpt_bytes": self.ckpt_path.stat().st_size if self.ckpt_path.exists() else 0,
             "checksum": self.state.checksum(),
+            "ckpt_latency_s": self.ckpt_latency_s,
+            "ckpt_mbps": self.ckpt_mbps,
         }

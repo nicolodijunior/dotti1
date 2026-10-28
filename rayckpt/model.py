@@ -25,6 +25,8 @@ import math
 
 from scipy.special import lambertw
 
+from .agent import storage_delay_s
+
 # ---------------------------------------------------------------------------
 # Intervalo ótimo
 # ---------------------------------------------------------------------------
@@ -116,6 +118,67 @@ def expected_cost_per_call(N: float, w: float, delta: float, M: float, R: float)
     """
     tau = N * w
     return w * (1.0 + delta / tau + (tau / 2.0 + R) / M)
+
+
+# ---------------------------------------------------------------------------
+# Projeção para storage realista
+# ---------------------------------------------------------------------------
+
+# Perfis de storage remoto, em (latência por operação [s], vazão [MB/s]).
+#
+# O δ que medimos é o do disco local, que é o piso otimista: um checkpoint de
+# actor precisa estar acessível a todo o cluster, e nesse caso δ é dominado
+# por rede, não por disco. Os números abaixo são ordens de grandeza
+# publicadas para cada classe de storage, não medições nossas — por isso o
+# que sai daqui é rotulado como projeção, e não como resultado medido.
+STORAGE_PROFILES: dict[str, tuple[float, float]] = {
+    "EFS / NFS": (0.010, 250.0),
+    "S3 (stream único)": (0.030, 120.0),
+    "S3 (cross-region)": (0.120, 60.0),
+}
+
+
+def delta_remote(state_bytes: int, profile: str, delta_local: float = 0.0) -> float:
+    """δ projetado para gravar `state_bytes` no storage `profile`.
+
+    `delta_local` é somado porque serializar e tocar o disco continua
+    custando: o storage remoto entra como custo *adicional*, que é exatamente
+    como o actor o injeta (ver `agent.storage_delay_s`). Passando o δ local
+    medido para o mesmo tamanho de estado, a projeção fica consistente com o
+    que uma execução com `--ckpt-latency-ms`/`--ckpt-mbps` mediria.
+    """
+    latency_s, mbps = STORAGE_PROFILES[profile]
+    return delta_local + storage_delay_s(state_bytes, latency_s, mbps)
+
+
+def crossover_bytes(profile: str) -> float:
+    """Tamanho de estado em que latência e transferência se igualam.
+
+    Abaixo dele δ é ~constante (dominado pela latência) e a hipótese de
+    Young/Daly de que δ não depende do intervalo vale trivialmente; acima,
+    δ cresce proporcionalmente ao estado.
+    """
+    latency_s, mbps = STORAGE_PROFILES[profile]
+    return latency_s * mbps * 1e6
+
+
+def optimum_table(delta: float, M: float, w: float, R: float = 0.0) -> dict:
+    """N* pelos quatro modelos, mais o custo relativo no ótimo.
+
+    `cost_rel_pct` é o excesso sobre o tempo de solução puro no ótimo, isto é
+    quanto da execução é overhead inevitável (checkpoint + rework) quando o
+    intervalo está bem escolhido.
+    """
+    n_exact = daly_exact(delta, M) / w
+    cost_at_opt = expected_cost_per_call(n_exact, w, delta, M, R)
+    return {
+        "N_young": young_1974(delta, M) / w,
+        "N_daly_1st": daly_first_order(delta, M, R) / w,
+        "N_daly_high": daly_high_order(delta, M) / w,
+        "N_daly_exact": n_exact,
+        "cost_rel_pct": (cost_at_opt / w - 1.0) * 100.0,
+        "xi": math.sqrt(delta / (2.0 * M)),
+    }
 
 
 def expected_lost_calls(N: int) -> float:

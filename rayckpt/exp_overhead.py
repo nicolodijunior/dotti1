@@ -28,13 +28,24 @@ INTERVALS = [1, 2, 5, 10, 20, 50, 100, 200, 0]  # 0 = nunca faz checkpoint
 STATE_SIZES_KB = [64, 512, 4096]
 
 
-def run_one(interval: int, state_kb: int, calls: int, work_s: float, warmup: int, tag: str) -> dict:
+def run_one(
+    interval: int,
+    state_kb: int,
+    calls: int,
+    work_s: float,
+    warmup: int,
+    tag: str,
+    ckpt_latency_s: float = 0.0,
+    ckpt_mbps: float = 0.0,
+) -> dict:
     workdir = fresh_workdir(f"overhead-{tag}")
     agent = ToolCallingAgent.remote(
         workdir=str(workdir),
         checkpoint_every=interval,
         work_s=work_s,
         state_kb=state_kb,
+        ckpt_latency_s=ckpt_latency_s,
+        ckpt_mbps=ckpt_mbps,
     )
     # Aquece: cria o processo, toca o disco, estabiliza o JIT do interpretador.
     for i in range(warmup):
@@ -62,6 +73,8 @@ def run_one(interval: int, state_kb: int, calls: int, work_s: float, warmup: int
         "ckpt_bytes": st["ckpt_bytes"],
         "delta_per_ckpt_s": (st["t_ckpt"] / st["n_ckpt"]) if st["n_ckpt"] else 0.0,
         "rpc_s": rpc_s,
+        "ckpt_latency_s": ckpt_latency_s,
+        "ckpt_mbps": ckpt_mbps,
     }
 
 
@@ -71,6 +84,24 @@ def main() -> None:
     ap.add_argument("--work-ms", type=float, default=2.0)
     ap.add_argument("--reps", type=int, default=3)
     ap.add_argument("--warmup", type=int, default=30)
+    ap.add_argument(
+        "--ckpt-latency-ms",
+        type=float,
+        default=0.0,
+        help="latência fixa por checkpoint, em ms (0 = disco local)",
+    )
+    ap.add_argument(
+        "--ckpt-mbps",
+        type=float,
+        default=0.0,
+        help="vazão do storage de checkpoint, em MB/s (0 = disco local)",
+    )
+    ap.add_argument(
+        "--out",
+        type=str,
+        default="overhead.csv",
+        help="nome do CSV em results/ (use outro nome para não sobrescrever a corrida principal)",
+    )
     ap.add_argument("--quick", action="store_true")
     args = ap.parse_args()
 
@@ -94,6 +125,8 @@ def main() -> None:
                     work_s=args.work_ms / 1000.0,
                     warmup=args.warmup,
                     tag=f"{state_kb}-{interval}-{rep}",
+                    ckpt_latency_s=args.ckpt_latency_ms / 1000.0,
+                    ckpt_mbps=args.ckpt_mbps,
                 )
                 r["rep"] = rep
                 rows.append(r)
@@ -104,7 +137,7 @@ def main() -> None:
                     f"rep={rep}  {r['wall_per_call_s'] * 1e3:7.3f} ms/chamada  "
                     f"delta={r['delta_per_ckpt_s'] * 1e3:6.3f} ms"
                 )
-    write_csv(RESULTS / "overhead.csv", rows)
+    write_csv(RESULTS / args.out, rows)
     ray.shutdown()
 
 
